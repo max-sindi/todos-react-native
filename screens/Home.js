@@ -12,7 +12,8 @@ import {
   FlatList,
   ScrollView,
   EditTodo,
-  TouchableOpacity
+  TouchableOpacity,
+  Transforms,
 } from 'react-native'
 
 let TodoItem = function({ item, navigation }) {
@@ -28,6 +29,12 @@ let TodoItem = function({ item, navigation }) {
           <View style={{maxHeight: 60}}>
               <Text style={styles.itemBody}>{item.body}</Text>
           </View>
+          {/* arrow */}
+          {/*<Transforms>*/}
+            <View style={styles.arrowContainer}>
+              <Ionicons name={'md-arrow-forward'} size={20}/>
+            </View>
+          {/*</Transforms>*/}
       </TouchableOpacity>
   )
 }
@@ -35,22 +42,22 @@ let TodoItem = function({ item, navigation }) {
 TodoItem = withNavigation(TodoItem)
 
 const TodoList = function({items}) {
-    return (
-        <View>
-            {items.map((item) => <TodoItem key={item.id} item={item}/>)}
-        </View>
-    )
+  return (
+    <View>
+        {items.map((item) => <TodoItem key={item.id} item={item}/>)}
+    </View>
+  )
 }
-
-class Home extends React.Component {
-    componentDidMount() {
-        this.props.fetchTodos()
-    }
 
 // {/*<FlatList*/}
 // {/*data={todos}*/}
 // {/*renderItem={({item}) => <TodoItem key={item.id} item={item}/>}*/}
 // {/*/>*/}
+
+class Home extends React.Component {
+    componentDidMount() {
+        this.props.fetchTodos()
+    }
     render () {
         const {todos, isFetched} = this.props
         return (
@@ -63,10 +70,10 @@ class Home extends React.Component {
             </View>
             <ScrollView style={styles.listContainer}>
               <View>
-                  {isFetched ?
-                    <ActivityIndicator/> :
-                    <TodoList items={todos} />
-                  }
+                {isFetched ?
+                  <ActivityIndicator/> :
+                  <TodoList items={todos} />
+                }
               </View>
 
             </ScrollView>
@@ -133,6 +140,11 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#789'
   },
+  arrowContainer: {
+    position: 'absolute',
+    top: '50%',
+    right: 10,
+  }
 })
 
 export default connect(

@@ -41,9 +41,20 @@ class Todo extends React.Component {
   }
 
   validateForm = () => {
+    const {form} = this.state
     const validationsResult = {
       isValid: true,
       errorMessage: null
+    }
+
+    if( !form.title.trim() ) {
+      validationsResult.isValid = false
+      validationsResult.errorMessage = "Title can't be empty"
+    }
+
+    if( !form.body.trim()  ) {
+      validationsResult.isValid = false
+      validationsResult.errorMessage = "Body can't be empty"
     }
 
     // joi.validate(this.state.form, NewTodo.formSchema, (err) => {
@@ -114,7 +125,11 @@ class Todo extends React.Component {
             onPress={this.submit}
           />
         </View>
-        {errorMessage && <View><Text>{errorMessage}</Text></View>}
+        {errorMessage && (
+          <View style={styles.errorMessageContainer}>
+            <Text style={styles.errorMessageText}>{errorMessage}</Text>
+          </View>
+        )}
       </View>
     )
   }
@@ -155,6 +170,13 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     marginTop: 10,
+  },
+  errorMessageContainer: {
+    marginTop: 10,
+  },
+  errorMessageText: {
+    color: 'red',
+    textAlign: 'center'
   }
 });
 
