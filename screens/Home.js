@@ -2,11 +2,12 @@ import React from 'react'
 import {NavigationEvents, withNavigation} from 'react-navigation'
 import {connect} from 'react-redux'
 import {fetchTodos} from '../store/todos/todosActions'
+import {Ionicons} from '@expo/vector-icons'
+import {Button} from 'react-native-elements'
 import {
   View,
   Text,
   ActivityIndicator,
-  Button,
   StyleSheet,
   FlatList,
   ScrollView,
@@ -15,20 +16,20 @@ import {
 } from 'react-native'
 
 let TodoItem = function({ item, navigation }) {
-
   function navigateToTodo() {
     navigation.navigate('EditTodo', {id: item.id})
   }
-    return (
-        <TouchableOpacity style={styles.itemContainer} onPress={navigateToTodo}>
-            <View>
-                <Text style={styles.itemTitle}>{item.title}</Text>
-            </View>
-            <View>
-                <Text style={styles.itemBody}>{item.body}</Text>
-            </View>
-        </TouchableOpacity>
-    )
+
+  return (
+      <TouchableOpacity style={styles.itemContainer} onPress={navigateToTodo}>
+          <View>
+              <Text style={styles.itemTitle}>{item.title}</Text>
+          </View>
+          <View style={{maxHeight: 60}}>
+              <Text style={styles.itemBody}>{item.body}</Text>
+          </View>
+      </TouchableOpacity>
+  )
 }
 
 TodoItem = withNavigation(TodoItem)
@@ -53,48 +54,67 @@ class Home extends React.Component {
     render () {
         const {todos, isFetched} = this.props
         return (
-            <ScrollView style={styles.container}>
-              <View style={styles.listContainer}>
+          <View style={styles.container}>
+            <NavigationEvents onDidFocus={this.props.fetchTodos} />
+            <View style={styles.titleContainer}>
+              <Text style={styles.titleText}>
+                Your list of Todos
+              </Text>
+            </View>
+            <ScrollView style={styles.listContainer}>
+              <View>
                   {isFetched ?
                     <ActivityIndicator/> :
                     <TodoList items={todos} />
                   }
               </View>
-              <View style={styles.button}>
-                <Button
-                  onPress={() => this.props.navigation.navigate('NewTodo')}
-                  title={'+'}
-                />
-              </View>
 
-              <NavigationEvents onDidFocus={this.props.fetchTodos} />
             </ScrollView>
+            <View style={styles.button}>
+              <Button
+                type={'clear'}
+                onPress={() => this.props.navigation.navigate('NewTodo')}
+                icon={
+                  <Ionicons
+                    name={'md-add-circle'}
+                    color={'purple'}
+                    size={50}
+                  />
+                }
+              />
+            </View>
+          </View>
         )
     }
 }
 
 const styles = StyleSheet.create({
   container: {
-    position: 'relative',
-    zIndex: 1,
+    display: 'flex',
+    flexGrow: 1,
   },
   listContainer: {
     position: 'relative',
-    zIndex: 2,
+    zIndex: 1,
+  },
+  titleContainer: {
+    marginTop: 5,
+    marginBottom: 10,
+  },
+  titleText: {
+    fontSize: 25,
+    fontWeight: "600",
+    textAlign: 'center',
+    color: '#357'
   },
   button: {
     position: 'absolute',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    width: 30,
-    height: 30,
-    bottom: 20,
-    right: 20,
-    zIndex: 10,
-    fontSize: 30,
-    borderRadius: 50,
-    backgroundColor: 'red'
+    bottom: 50,
+    right: 30,
+    zIndex: 4,
   },
   itemTitle: {
     fontSize: 20,
@@ -105,11 +125,13 @@ const styles = StyleSheet.create({
     color: '#ccc'
   },
   itemContainer: {
+    paddingLeft: 10,
+    paddingRight: 10,
     backgroundColor: '#aaa',
     marginBottom: 10,
     paddingBottom: 5,
     borderBottomWidth: 1,
-    borderBottomColor: 'red'
+    borderBottomColor: '#789'
   },
 })
 

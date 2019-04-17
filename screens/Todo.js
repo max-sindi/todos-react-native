@@ -1,10 +1,11 @@
 import React from 'react'
-import {Text, View, TextInput, StyleSheet, Button, Switch} from 'react-native'
+import {Text, View, TextInput, StyleSheet, Switch} from 'react-native'
 import {connect} from 'react-redux'
 import {createNewTodo, fetchTodoById, updateTodoById} from '../store/todos/todosActions'
 // import joi from 'joi'
+import { Button } from 'react-native-elements';
 
-class NewTodo extends React.Component {
+class Todo extends React.Component {
   state = {
     form: {
       title: '',
@@ -68,7 +69,7 @@ class NewTodo extends React.Component {
   componentDidUpdate(prevProps, prevState) {
     if(prevProps.todo !== this.props.todo) {
       const updatedFormData = {}
-      // prepare data from fetched todo
+      // prepare data to push from fetched todo to state
       Object.keys(this.state.form).forEach(field => {
         updatedFormData[field] = this.props.todo[field]
       })
@@ -78,11 +79,11 @@ class NewTodo extends React.Component {
   }
 
   render() {
-    const {form, errorMessage} = this.state
+    const {id, form, errorMessage} = this.state
     return (
-      <View>
+      <View style={styles.container}>
         <Text style={styles.title}>
-          New Todo +
+          {id ? 'Update Todo' : 'New Todo +'}
         </Text>
         <View>
           <TextInput
@@ -93,19 +94,21 @@ class NewTodo extends React.Component {
             createNewTodo={'dark'}
           />
           <TextInput
-            style={styles.input}
+            style={[styles.input, {height: 300}]}
             value={form.body}
             placeholder={"body"}
+            multiline={true}
             onChangeText={text => this.changeFormState(text, 'body')}
           />
           <View>
+            <Text style={styles.isDoneTitle}>Complited?</Text>
             <Switch
               value={form.isDone}
               onValueChange={value => this.changeFormState(value, 'isDone')}
             />
           </View>
         </View>
-        <View>
+        <View style={styles.buttonContainer}>
           <Button
             title={'Confirm'}
             onPress={this.submit}
@@ -132,13 +135,29 @@ const styles = StyleSheet.create({
   },
   input: {
     marginBottom: 10,
-    padding: '2% 4%',
+    paddingTop: 7,
+    paddingBottom: 7,
+    paddingLeft: 10,
+    paddingRight: 10,
+    borderRadius: 7,
     borderColor: '#eee',
     borderWidth: 1,
     color: 'purple',
+    textAlignVertical: "top",
+  },
+  isDoneTitle: {
+    fontSize: 20,
+    color: '#eae'
+  },
+  container: {
+    paddingLeft: 10,
+    paddingRight: 10,
+  },
+  buttonContainer: {
+    marginTop: 10,
   }
 });
 
 export default connect(
   store => ({todo: store.todo.data}), {createNewTodo, fetchTodoById, updateTodoById}
-)(NewTodo)
+)(Todo)

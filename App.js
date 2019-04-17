@@ -4,13 +4,13 @@ import { createStackNavigator, createAppContainer } from 'react-navigation'
 import {Provider} from 'react-redux'
 import store from './store'
 import Home from './screens/Home'
-import NewTodo from './screens/NewTodo'
+import Todo from './screens/Todo'
 
 const NavigationContainer = createAppContainer(createStackNavigator(
     {
       Home: {screen: Home},
-      NewTodo: {screen: NewTodo},
-      EditTodo: {screen: NewTodo}
+      NewTodo: {screen: Todo},
+      EditTodo: {screen: Todo}
     },
     {
         initialRouteName: "Home"
@@ -31,7 +31,7 @@ export default class App extends React.Component {
     render() {
       return (
           <Provider store={store}>
-            <NavigationContainer />
+            <NavigationContainer/>
           </Provider>
       );
   }
