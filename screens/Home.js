@@ -111,7 +111,7 @@ let Home = class extends React.Component {
         this.props.fetchTodosWithFiltersAndSearch()
     }
     render () {
-        const {todos, isFetched} = this.props
+        const {todos, isFetching, errorMessage} = this.props
         return (
           <View style={styles.container}>
             <NavigationEvents onDidFocus={this.props.fetchTodosWithFiltersAndSearch} />
@@ -120,16 +120,27 @@ let Home = class extends React.Component {
                 Your list of Todos
               </Text>
             </View>
+
             <Search />
+
+            {/* ERROR MESSAGE RENDERING*/}
+            {errorMessage ? (
+              <View style={styles.errorMessageContainer}>
+                <Text style={styles.errorMessageText}>{errorMessage}</Text>
+              </View>
+            ) : null}
+
+            {/* LIST RENDERING*/}
             <ScrollView style={styles.listContainer}>
               <View>
-                {isFetched ?
+                {isFetching ?
                   <ActivityIndicator/> :
                   <TodoList items={todos} />
                 }
               </View>
-
             </ScrollView>
+
+            {/* ADD TODO BUTTON*/}
             <View style={styles.button}>
               <Button
                 type={'clear'}
@@ -152,10 +163,15 @@ Home = connect(
   store => ({
     todos: store.todos.data,
     isFetching: store.todos.isFetching,
+    errorMessage: store.todos.errorMessage
   }), {fetchTodosWithFiltersAndSearch}
 )(Home)
 
 const styles = StyleSheet.create({
+  errorMessageText: {
+    color: 'red',
+    textAlign: 'center'
+  },
   searchIcon: {
     position: 'absolute',
     top: 5,

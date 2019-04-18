@@ -5,6 +5,7 @@ import {success, error} from "redux-saga-requests"
 const initialState = {
   data: [],
   isFetching: false,
+  errorMessage: '',
 }
 
 
@@ -13,8 +14,8 @@ export const todos = (state = initialState, action) => {
 
   const availableMutations = {
     [types.FETCH_TODOS]: () => ({...state, isFetching: true}),
-    [success(types.FETCH_TODOS)]: () => ({...state, isFetching: false, data}),
-    [error(types.FETCH_TODOS)]: () => ({...state, isFetching: false}),
+    [success(types.FETCH_TODOS)]: () => ({...state, isFetching: false, data, errorMessage: ''}),
+    [error(types.FETCH_TODOS)]: () => ({...state, isFetching: false, errorMessage: action.error.message}),
     [success(types.DELETE_TODO_SIGNLE)]: () => ({
       ...state, data: [
         ...state.data.slice(0, meta.index),
