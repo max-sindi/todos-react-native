@@ -1,9 +1,11 @@
 import React from 'react'
 import {NavigationEvents, withNavigation} from 'react-navigation'
 import {connect} from 'react-redux'
-import {fetchTodos} from '../store/todos/todosActions'
+import {fetchTodosWithFiltersAndSearch} from '../store/todos/todosActions'
+import {changeSearchString, clearSearchString} from '../store/search/searchActions'
 import {Ionicons} from '@expo/vector-icons'
 import {Button} from 'react-native-elements'
+import {input} from './Todo'
 import {
   View,
   Text,
@@ -13,9 +15,13 @@ import {
   ScrollView,
   EditTodo,
   TouchableOpacity,
-  Transforms,
+  TextInput,
 } from 'react-native'
 
+
+/***
+ * LIST ITEM
+ * ***/
 let TodoItem = function({ item, navigation }) {
   function navigateToTodo() {
     navigation.navigate('EditTodo', {id: item.id})
@@ -41,33 +47,80 @@ let TodoItem = function({ item, navigation }) {
 
 TodoItem = withNavigation(TodoItem)
 
+/***
+ * LIST RENDERING
+ * ***/
 const TodoList = function({items}) {
   return (
     <View>
-        {items.map((item) => <TodoItem key={item.id} item={item}/>)}
+        {items.length === 0 ?
+          <Text style={styles.emptyListMessage}>The list is empty.</Text> :
+          items.map((item) => <TodoItem key={item.id} item={item}/>)
+        }
     </View>
   )
 }
 
-// {/*<FlatList*/}
-// {/*data={todos}*/}
-// {/*renderItem={({item}) => <TodoItem key={item.id} item={item}/>}*/}
-// {/*/>*/}
+/***
+ * SEARCH
+ * ***/
+let Search = function({changeSearchString, clearSearchString, searchValue, fetchTodosWithFiltersAndSearch}) {
+  return (
+    <View>
+        <View style={styles.searchIcon}>
+          <Ionicons name={'md-search'} size={25}/>
+        </View>
+      <TextInput
+        value={searchValue}
+        style={[input, {marginLeft: 10, marginRight: 10, paddingLeft: 40}]}
+        onChangeText={text => {
+          changeSearchString(text);
+          fetchTodosWithFiltersAndSearch();
+        }}
+      />
+      {/* button as cross icon who clears search*/}
+      <View style={styles.clearSearch}>
+        <Button
+          type={'clear'}
+          onPress={() => {
+            clearSearchString();
+            fetchTodosWithFiltersAndSearch();
+          }}
+          icon={
+            <Ionicons size={25} name={'md-close'}></Ionicons>
+          }
+        />
+      </View>
+    </View>
+  )
+}
 
-class Home extends React.Component {
+Search = connect(
+  store => ({
+    searchValue: store.search.searchString
+  }),
+  {changeSearchString, clearSearchString, fetchTodosWithFiltersAndSearch}
+)(Search)
+
+
+/***
+ * HOME (DEFAULT EXPORTED)
+ * ***/
+let Home = class extends React.Component {
     componentDidMount() {
-        this.props.fetchTodos()
+        this.props.fetchTodosWithFiltersAndSearch()
     }
     render () {
         const {todos, isFetched} = this.props
         return (
           <View style={styles.container}>
-            <NavigationEvents onDidFocus={this.props.fetchTodos} />
+            <NavigationEvents onDidFocus={this.props.fetchTodosWithFiltersAndSearch} />
             <View style={styles.titleContainer}>
               <Text style={styles.titleText}>
                 Your list of Todos
               </Text>
             </View>
+            <Search />
             <ScrollView style={styles.listContainer}>
               <View>
                 {isFetched ?
@@ -95,7 +148,29 @@ class Home extends React.Component {
     }
 }
 
+Home = connect(
+  store => ({
+    todos: store.todos.data,
+    isFetching: store.todos.isFetching,
+  }), {fetchTodosWithFiltersAndSearch}
+)(Home)
+
 const styles = StyleSheet.create({
+  searchIcon: {
+    position: 'absolute',
+    top: 5,
+    left: 20,
+  },
+  clearSearch: {
+    position: 'absolute',
+    right: 10,
+    top: -3,
+    padding: 0,
+  },
+  emptyListMessage: {
+    textAlign: 'center',
+    color: '#357'
+  },
   container: {
     display: 'flex',
     flexGrow: 1,
@@ -147,9 +222,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default connect(
-    store => ({
-        todos: store.todos.data,
-        isFetching: store.todos.isFetching,
-    }), {fetchTodos}
-)(Home)
+export default Home

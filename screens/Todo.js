@@ -135,7 +135,21 @@ class Todo extends React.Component {
   }
 }
 
+export const input = {
+  marginBottom: 10,
+  paddingTop: 7,
+  paddingBottom: 7,
+  paddingLeft: 10,
+  paddingRight: 10,
+  borderRadius: 7,
+  borderColor: '#eee',
+  borderWidth: 1,
+  color: 'purple',
+  textAlignVertical: "top",
+}
+
 const styles = StyleSheet.create({
+  input,
   container: {
     flex: 1,
     backgroundColor: '#fff',
@@ -147,18 +161,6 @@ const styles = StyleSheet.create({
     margin: 10,
     fontSize: 24,
     color: 'green'
-  },
-  input: {
-    marginBottom: 10,
-    paddingTop: 7,
-    paddingBottom: 7,
-    paddingLeft: 10,
-    paddingRight: 10,
-    borderRadius: 7,
-    borderColor: '#eee',
-    borderWidth: 1,
-    color: 'purple',
-    textAlignVertical: "top",
   },
   isDoneTitle: {
     fontSize: 20,

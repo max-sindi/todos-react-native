@@ -62,7 +62,7 @@ export const fetchTodosWithFiltersAndSearch = () => (dispatch, getState) => {
   const {searchString} = state.search
   const {filterByDone} = state.todosFilters
   // 'q' means full-text search, https://github.com/typicode/json-server#full-text-search
-  const searchParams = searchString ? {q: searchString} : null
+  const searchParams = searchString ? {search: searchString} : null
   const filterByDoneParams = filterByDone ? {isDone: filterByDone} : null
 
   dispatch(fetchTodos({...searchParams, ...filterByDoneParams}))
