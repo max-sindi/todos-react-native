@@ -18,10 +18,6 @@ import {
   TextInput,
 } from 'react-native'
 
-
-/***
- * LIST ITEM
- * ***/
 let TodoItem = function({ item, navigation }) {
   function navigateToTodo() {
     navigation.navigate('EditTodo', {id: item.id})
@@ -47,9 +43,6 @@ let TodoItem = function({ item, navigation }) {
 
 TodoItem = withNavigation(TodoItem)
 
-/***
- * LIST RENDERING
- * ***/
 const TodoList = function({items}) {
   return (
     <View>
@@ -61,9 +54,6 @@ const TodoList = function({items}) {
   )
 }
 
-/***
- * SEARCH
- * ***/
 let Search = function({changeSearchString, clearSearchString, searchValue, fetchTodosWithFiltersAndSearch}) {
   return (
     <View>
@@ -78,7 +68,7 @@ let Search = function({changeSearchString, clearSearchString, searchValue, fetch
           fetchTodosWithFiltersAndSearch();
         }}
       />
-      {/* button as cross icon who clears search*/}
+      {/* button as cross icon which clears search*/}
       <View style={styles.clearSearch}>
         <Button
           type={'clear'}
@@ -102,10 +92,6 @@ Search = connect(
   {changeSearchString, clearSearchString, fetchTodosWithFiltersAndSearch}
 )(Search)
 
-
-/***
- * HOME (DEFAULT EXPORTED)
- * ***/
 let Home = class extends React.Component {
     componentDidMount() {
         this.props.fetchTodosWithFiltersAndSearch()
